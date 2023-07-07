@@ -1,0 +1,124 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, sans-serif;
+}
+
+/* Set navigation styles */
+nav {
+    background-color: #333;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 15vh;
+}
+
+nav .logo{
+    height: 80px;
+    width: 80px;
+    align-self: center;
+}
+
+nav img{
+    border-radius: 5px;
+}
+
+/* Set navigation list styles */
+nav ul {
+    list-style-type: none;
+    display: grid;
+    justify-self: flex-end;
+    grid-template-columns: repeat(3 , 100px);
+    justify-items: center;
+    align-items: center;
+    
+}
+
+nav li {
+    margin-right: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+nav a:hover,
+nav a:focus {
+    color: #f00;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    padding: 2rem;
+    height: 30vh;
+}
+
+.description {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* HOMEPAGE SECTION */
+
+#homepage{
+    background: #6f706f;
+    color: #fff;
+    height: 50vh;
+}
+
+#homepage p{
+    width: 80%;
+    margin: auto;
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+#homepage a{
+    text-decoration: none;
+    color: #fff;
+}
+
+#product-listing, #order-tracking, #supplier-management {
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.sections-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 80%;
+    margin: auto;
+
+}
+
+#products, #orders , #suppliers{
+    border: 1px solid white;
+    border-radius: 5px;
+    height: 10rem;
+    width: 15rem;
+    justify-self: center;
+    align-self: center;
+
+    font-size: 1.2rem;
+    
+    display: grid;
+    align-items: center;
+}
+
+#products div, #orders div , #suppliers div{
+    text-align: center;
+}
+
+#products:hover, #orders:hover , #suppliers:hover{
+    cursor: pointer;
+    background: #fff;
+    color: #000;
+}
