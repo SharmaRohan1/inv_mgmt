@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Edit order</title>
+
+    <style>
+
+.order-management {
+    padding: 1rem;
+}
+        .order-management h2 {
+   margin-bottom: 10px;
+}
+
+button{
+    padding: 0.5rem;
+    background: green;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    display: block;
+}
+
+.order-management form {
+    margin-top: 20px;
+}
+  
+.order-management form label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+.order-management form input {
+    margin-bottom: 10px;
+    padding: 0.5rem;
+    font-size: 1.05rem;
+}
+
+    </style>
+
+
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Supplier Management System</h1>
+    </header>
+
+    <div class="main-section">
+
+        <div class="order-management">
+            <h2>Edit Supplier</h2>
+
+            <form>
+
+                <label for="id">Suppler ID:</label>
+                <input type="text" name="id" value="<%= id %>" disabled>
+
+                <label for="name">Name</label>
+                <input type="text" name="name" value="" required>
+
+                <label for="contact_name">Contact Name</label>
+                <input type="text" name="contact_name" value="" required>
+
+                <label for="phone_number">Phone number</label>
+                <input type="tel" name="phone_number" value="" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890">
+
+                <label for="email">Email</label>
+                <input type="email" name="email" value="" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+
+                <label for="address">Address</label>
+                <input type="text" name="address" value="" required>
+
+                <button type="submit">Save Changes</button>
+
+            </form>
+        </div>
+
+
+    </div>
+
+    
+</body>
+</html>
+
+<script>
+    const editForm = document.querySelector("form");
+    const id = editForm.id.value;
+
+    const fetchDetails = async () => {
+        const response = await fetch(`/suppliers/${id}`);
+
+        const ret = await response.json();
+        console.log(ret[0]);
+
+        const name = ret[0].name;
+        const contact_name = ret[0].contact_name;
+        let phone_number = ret[0].phone_number;
+        let email = ret[0].email;
+        let address = ret[0].address;
+
+        editForm.name.value = name;
+        editForm.contact_name.value = contact_name;
+        editForm.phone_number.value = phone_number;
+        editForm.email.value = email;
+        editForm.address.value = address;
+
+    };
+
+    fetchDetails();
+
+    editForm.addEventListener("submit" , async (e) => {
+        e.preventDefault();
+        
+        const name = editForm.name.value;
+        const contact_name = editForm.contact_name.value;
+        const phone_number = editForm.phone_number.value;
+        const email = editForm.email.value;
+        const address = editForm.address.value;
+
+        const response = await fetch(`/orders/${id}` , {
+            method: "PUT" , 
+            headers : {
+                "Content-Type": "application/json"
+            } , 
+            body : JSON.stringify({name , contact_name , phone_number , email , address})
+        });
+
+        const ret = await response.json();
+        console.log(ret);
+
+        alert(ret.status);
+
+        if(ret.status === "success"){
+            window.location.replace("/supplier-management");
+        }
+    });
+</script>

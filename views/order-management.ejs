@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/css/order-styles.css">
+
+    <title>Order Managament</title>
+</head>
+<body>
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Order Management System</h1>
+    </header>
+
+    <div class="order-management">
+
+        <div class="create-new-order-container">
+            <a href="/newOrder"><button>Create New Order</button></a>
+        </div>
+
+        <div class="order-list-container">
+            
+            <div class="order-list">
+                <h2>Order List</h2>
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+    </div>
+    
+</body>
+
+<!-- fetching and displaying all the orders and editing orders redirection -->
+<script>
+    const fetchOrders = async ()=>{
+        const response = await fetch("./orders/" , {
+            method: "GET"
+        });
+
+        const orders = await response.json();
+        
+        orders.forEach(order => {
+            const ord = document.createElement('tr');
+
+            const id = order.id;
+            const customerId = order.customer_id;
+            const productId = order.product_id;
+            const quantity = order.quantity;
+
+            console.log(id , customerId , productId , quantity);
+
+            const ide = document.createElement('td');
+            const cid = document.createElement('td');
+            const pid = document.createElement('td');
+            const qe = document.createElement('td');
+
+            ide.innerText = id;
+            cid.innerText = customerId;
+            pid.innerText = productId;
+            qe.innerText = quantity;
+
+            ord.appendChild(ide);
+            ord.appendChild(cid);
+            ord.appendChild(pid);
+            ord.appendChild(qe);
+
+            const editButton = document.createElement('td');
+
+            const btn = document.createElement('a');
+            btn.innerText = "Edit";
+            btn.href = `/orderEdit/${id}`;
+            btn.classList.add('edit-btn');
+            
+            editButton.appendChild(btn);
+            ord.appendChild(editButton);
+
+            const tableBody = document.querySelector("tbody");
+            tableBody.appendChild(ord);
+
+        });
+
+        const editBtns = document.querySelectorAll(".edit-btn");
+        console.log(editBtns);
+    }
+
+    fetchOrders();
+
+
+
+
+</script>
+
+
+</html>

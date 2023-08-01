@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/css/order-styles.css">
+
+    <title>Order Managament</title>
+</head>
+<body>
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Supplier Management System</h1>
+    </header>
+
+    <div class="order-management">
+
+        <div class="create-new-order-container">
+            <a href="/newSupplier"><button>Add New Supplier</button></a>
+        </div>
+
+        <div class="order-list-container">
+            
+            <div class="order-list">
+                <h2>Supplier List</h2>
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <th>Name</th>
+                        <th>Contact Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+    </div>
+    
+</body>
+
+<!-- fetching and displaying all the orders and editing orders redirection -->
+<script>
+    const fetchSuppliers = async ()=>{
+        const response = await fetch("/suppliers/" , {
+            method: "GET"
+        });
+
+        const suppliers = await response.json();
+        console.log(suppliers);
+        
+        suppliers.forEach(supplier => {
+            const sup = document.createElement('tr');
+
+            const id = supplier.id;
+            const name = supplier.name;
+            const contact_name = supplier.contact_name;
+            const phone_number = supplier.phone_number;
+            const email = supplier.email;
+            const address = supplier.address;
+
+            const ide = document.createElement('td');
+            const ne = document.createElement('td');
+            const cne = document.createElement('td');
+            const pne = document.createElement('td');
+            const ee = document.createElement('td');
+            const ae = document.createElement('td');
+
+            ide.innerText = id;
+            ne.innerText = name;
+            cne.innerText = contact_name;
+            pne.innerText = phone_number;
+            ee.innerText = email;
+            ae.innerText = address;
+
+            sup.appendChild(ide);
+            sup.appendChild(ne);
+            sup.appendChild(cne);
+            sup.appendChild(pne);
+            sup.appendChild(ee);
+            sup.appendChild(ae);
+
+            const editButton = document.createElement('td');
+
+            const btn = document.createElement('a');
+            btn.innerText = "Edit";
+            btn.href = `/supplierEdit/${id}`;
+            btn.classList.add('edit-btn');
+            
+            editButton.appendChild(btn);
+            sup.appendChild(editButton);
+
+            const tableBody = document.querySelector("tbody");
+            tableBody.appendChild(sup);
+
+        });
+
+        // const editBtns = document.querySelectorAll(".edit-btn");
+        // console.log(editBtns);
+    }
+
+    fetchSuppliers();
+
+
+
+
+</script>
+
+
+</html>

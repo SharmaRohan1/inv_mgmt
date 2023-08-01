@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="css/order-styles.css">
+
+    <title>New Order</title>
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Order Management System</h1>
+    </header>
+
+    <div class="order-management">
+
+        <div class="main-container">
+            <h2>Place your order</h2>
+
+            <form>
+
+                <label for="customerId">Customer ID</label>
+                <input type="text" name="customerId" value="" required>
+
+                <label for="productId">Product ID</label>
+                <input type="text" name="productId" value="" required>
+
+                <label for="quantity">Quantity</label>
+                <input type="text" name="quantity" value="" required>
+
+                <button type="submit">Save Changes</button>
+
+            </form>
+        </div>
+
+
+    </div>
+
+    
+</body>
+</html>
+
+<script>
+
+    const editForm = document.querySelector("form");
+
+    editForm.addEventListener("submit" , async (e) => {
+        e.preventDefault();
+
+        const customerId = editForm.customerId.value;
+        const productId = editForm.productId.value;
+        const quantity = editForm.quantity.value;
+
+        console.log("form submitted" , customerId , productId , quantity);
+
+        const response = await fetch(`/orders/` , {
+            method: "POST" , 
+            headers : {
+                "Content-Type": "application/json"
+            } , 
+            body : JSON.stringify({customerId , productId , quantity})
+        });
+
+        const ret = await response.json();
+        console.log(ret);
+
+        alert(ret.status);
+
+        if(ret.status === "success"){
+            window.location.replace("/order-management");
+        }
+    });
+
+</script>

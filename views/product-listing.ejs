@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Listing</title>
+    <link rel="stylesheet" href="/css/product-listing-styles.css">
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Inventory Management System</h1>
+        <p class="description">A robust solution for tracking stock levels, order fulfillment, and supplier management.</p>
+    </header>
+
+    <div class="main-container">
+        <main>
+            <h2>Product Listing</h2>
+
+            <div class="search-container">
+                    <form class="search-form">
+                        <input type="text" name="query">
+                        <button type="submit" class="search-btn">&#128269;</button>
+                    </form>
+            </div>
+                
+            <div id="product-list">
+                <!-- Add the product list content here -->
+            </div>
+
+            <div class="pagination">
+                <div class="paginations-container">
+                    <div class="first-page-no">1</div>
+                    <div class="prev-btn"><div>&larrb;</div></div>
+                    <div class="page-no"><div>1</div></div>
+                    <div class="next-btn"><div>&rarrb;</div></div>
+                    <div class="last-page-no"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+      
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
+
+    
+</body>
+
+<!-- Normal fetch and pagination -->
+<script>
+
+    const productsPerPage = 6;
+    let totalPages = 0;
+    let totalProducts = 0;
+
+    const fetchProducts = async (pageNo)=>{
+        const response = await fetch(`./api/products?ppp=${productsPerPage}&pn=${pageNo}` , {
+            method: "GET"
+        });
+
+        const ret = await response.json();
+
+        //console.log(ret);
+
+        const products = ret.products;
+        totalPages = ret.totalPages;
+        totalProducts = ret.totalProducts;
+
+        document.querySelector(".last-page-no").innerHTML = totalPages;
+
+        console.log(totalPages , totalProducts);
+      
+        const productList = document.getElementById('product-list');
+        productList.innerHTML = "";
+        
+        products.forEach(product => {
+
+            console.log(product);
+
+            const productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+
+            const image = document.createElement('img');
+            image.src = product.image;
+            image.alt = product.name;
+            productItem.appendChild(image);
+
+            const title = document.createElement('h2');
+            title.textContent = product.name;
+            productItem.appendChild(title);
+
+            const description = document.createElement('p');
+            description.textContent = product.description;
+            productItem.appendChild(description);
+
+            const price = document.createElement('p');
+            price.textContent = `$${product.price}`;
+            productItem.appendChild(price);
+
+            const supplierId = async()=>{
+                const response = await fetch(`./product-supplier/${product.id}`);
+                const ret = await response.json();
+                //console.log(ret[0].supplier_id);
+
+                const suppInfo = await fetch(`/suppliers/${ret[0].supplier_id}`);
+                const ret1 = await suppInfo.json();
+
+                //console.log(supplier_name , supplier_contact);
+
+                const supplier_name = document.createElement('div');
+                supplier_name.textContent = `Supplier- ${ret1[0].name}`;
+                productItem.appendChild(supplier_name);
+
+                const supplier_contact = document.createElement('div');
+                supplier_contact.textContent = `Contact- ${ret1[0].phone_number}`;
+                productItem.appendChild(supplier_contact);
+            };
+
+            supplierId();
+
+            productList.appendChild(productItem);
+        });
+
+    };
+
+    //initial call
+    fetchProducts(1);
+
+    
+    //pagination
+    const nextBtn = document.querySelector(".next-btn");
+    const prevBtn = document.querySelector(".prev-btn");
+
+    nextBtn.addEventListener("click" , async ()=>{
+        const pageNo = document.querySelector(".page-no").innerText;
+        console.log("next clicked");
+
+        searchForm.query.value = '';
+
+        if(pageNo < totalPages){
+            console.log("next set of products");
+            const newPageNo = Number(pageNo) + 1;
+            document.querySelector(".page-no").innerHTML = newPageNo;
+            await fetchProducts(newPageNo);
+        }       
+
+    });
+
+    prevBtn.addEventListener("click" , async ()=>{
+        const pageNo = document.querySelector(".page-no").innerText;
+        console.log("prev clicked");
+
+        searchForm.query.value = '';
+
+
+        if(pageNo > 1){
+            console.log("prev set of products");
+            const newPageNo = Number(pageNo) - 1;
+            document.querySelector(".page-no").innerHTML = newPageNo;
+            await fetchProducts(newPageNo);
+        }       
+
+    });
+
+
+</script>
+
+<!-- search query -->
+<script>
+
+    const searchForm = document.querySelector(".search-form");
+
+    searchForm.addEventListener("submit" , async (e)=>{
+        e.preventDefault();
+
+        const query = searchForm.query.value;
+        console.log("form submitted" , query);
+
+        if(query === ''){
+            alert("Please enter something!");
+        }else{
+
+            try {
+                const response = await fetch(`/api/products?search=${query}`);
+                const filteredProducts = await response.json();
+                
+                const productList = document.getElementById('product-list');
+                // Clear the product list
+                productList.innerHTML = '';
+                
+                if (filteredProducts.length === 0) {
+                    productList.innerHTML = '<p>No products found.</p>';
+                } else {
+                    
+
+                    filteredProducts.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.classList.add('product-item');
+
+                        const image = document.createElement('img');
+                        image.src = product.image;
+                        image.alt = product.name;
+                        productItem.appendChild(image);
+
+                        const title = document.createElement('h2');
+                        title.textContent = product.name;
+                        productItem.appendChild(title);
+
+                        const description = document.createElement('p');
+                        description.textContent = product.description;
+
+
+                        productItem.appendChild(description);
+
+                        const price = document.createElement('p');
+                        price.textContent = `$${product.price}`;
+                        productItem.appendChild(price);
+
+                        productList.appendChild(productItem);
+                    });
+
+                }
+
+                document.querySelector(".last-page-no").innerHTML = 1;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+
+    });
+
+</script>
+
+</html>
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Edit order</title>
+
+    <style>
+
+.order-management {
+    padding: 1rem;
+}
+        .order-management h2 {
+   margin-bottom: 10px;
+}
+
+button{
+    padding: 0.5rem;
+    background: green;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    display: block;
+}
+
+.order-management form {
+    margin-top: 20px;
+}
+  
+.order-management form label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+.order-management form input {
+    margin-bottom: 10px;
+    padding: 0.5rem;
+    font-size: 1.05rem;
+}
+
+    </style>
+
+
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Order Management System</h1>
+    </header>
+
+    <div class="main-section">
+
+        <div class="order-management">
+            <h2>Edit your order</h2>
+
+            <form>
+
+                <label for="id">Order ID:</label>
+                <input type="text" name="id" value="<%= id %>" disabled>
+
+                <label for="customerId">Customer ID</label>
+                <input type="text" name="customerId" value="" disabled>
+
+                <label for="productId">Product ID</label>
+                <input type="text" name="productId" value="" disabled>
+
+                <label for="quantity">Quantity</label>
+                <input type="text" name="quantity" value="">
+
+                <button type="submit">Save Changes</button>
+
+            </form>
+        </div>
+
+
+    </div>
+
+    
+</body>
+</html>
+
+<script>
+    const editForm = document.querySelector("form");
+    const id = editForm.id.value;
+
+    const fetchDetails = async () => {
+        const response = await fetch(`/orders/${id}`);
+
+        const ret = await response.json();
+        console.log(ret[0]);
+
+        const customerId = ret[0].customer_id;
+        const productId = ret[0].product_id;
+        let quantity = ret[0].quantity;
+
+        editForm.customerId.value = customerId;
+        editForm.productId.value = productId;
+        editForm.quantity.value = quantity;
+
+    };
+
+    fetchDetails();
+
+    editForm.addEventListener("submit" , async (e) => {
+        e.preventDefault();
+        
+        //id , customerID , productID remains same
+        quantity = editForm.quantity.value;
+
+        console.log("form submitted" , quantity);
+
+        const response = await fetch(`/orders/${id}` , {
+            method: "PUT" , 
+            headers : {
+                "Content-Type": "application/json"
+            } , 
+            body : JSON.stringify({quantity})
+        });
+
+        const ret = await response.json();
+        console.log(ret);
+
+        alert(ret.status);
+
+        if(ret.status === "success"){
+            window.location.replace("/order-management");
+        }
+    });
+</script>

@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>User Registration</title>
+  <link rel="stylesheet" href="css/style.css">
+  //<link rel="stylesheet" href="css/regLogin.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="form">
+      <form action="/auth/register" method="POST"  class="register-form">
+        <input type="text" id="username" name="username" required placeholder="Username"/>
+        <input type="password" id="password" name="password" required placeholder="password"/>
+        <button>Register</button>
+        <p class="message">Already registered? <a href="/auth/login">Sign In</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- <h1>User Registration</h1>
+  <form action="/auth/register" method="POST" class="register-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Register</button>
+  </form>
+</body>
+
+<div>
+  <a href="/auth/login">Existing user?</a>
+</div> -->
+
+</html>
+
+<script>
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit" , async(e)=>{
+    e.preventDefault();
+    const username = form.username.value;
+    const password = form.password.value;
+
+    const response = await fetch(`./register` , {
+        method: "POST" , 
+        headers : {
+          "Content-Type": "application/json"
+        } , 
+        body : JSON.stringify({username , password})
+    });
+
+    const ret = await response.json();
+    console.log(ret);
+    alert(ret.status);
+    
+    if(ret.status === "Success"){
+      window.location.replace("/auth/login");
+    }else{
+      window.location.reload(true);
+    }
+  });
+</script>

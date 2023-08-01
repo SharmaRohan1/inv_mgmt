@@ -1,0 +1,56 @@
+<html>
+<head>
+  <title>User Login</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>User Login</h1>
+  <form>
+    <label for="username">Username/Email:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Login</button>
+  </form>
+</body>
+
+<div>
+  <a href="/auth/register">New User?</a>
+</div>
+</html>
+
+<script>
+  document.cookie = "token=; expires=Session; path=/";
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit" ,async (e)=>{
+    e.preventDefault();
+    const username = form.username.value;
+    const password = form.password.value;
+
+    const response = await fetch(`./login` , {
+        method: "POST" , 
+        headers : {
+          "Content-Type": "application/json"
+        } , 
+        body : JSON.stringify({username , password})
+    });
+
+    const ret = await response.json();
+    console.log(ret);
+
+    if(ret.status === "success"){
+      const token = ret.token;
+      //document.cookie = "username=John Doe; path=/";
+      console.log("token ",token);
+      document.cookie = `token=${token}; path=/;`;
+
+      window.location.replace("/");
+    }else{
+      alert(ret.status);
+      window.location.reload(true);
+    }
+  });
+</script>

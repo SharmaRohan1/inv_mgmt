@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="css/order-styles.css">
+
+    <title>New Order</title>
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+
+    <header>
+        <h1>Welcome to the Supplier Management System</h1>
+    </header>
+
+    <div class="order-management">
+
+        <div class="main-container">
+            <h2>Add Supplier</h2>
+
+            <form>
+
+                <label for="id">Suppler ID:</label>
+                <input type="text" name="id" value="" required>
+
+                <label for="name">Name</label>
+                <input type="text" name="name" value="" required>
+
+                <label for="contact_name">Contact Name</label>
+                <input type="text" name="contact_name" value="" required>
+
+                <label for="phone_number">Phone number</label>
+                <input type="tel" name="phone_number" value="" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890">
+
+                <label for="email">Email</label>
+                <input type="email" name="email" value="" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$">
+
+                <label for="address">Address</label>
+                <input type="text" name="address" value="" required>
+
+                <button type="submit">Save Changes</button>
+
+            </form>
+        </div>
+
+
+    </div>
+
+    
+</body>
+</html>
+
+<script>
+
+    const editForm = document.querySelector("form");
+
+    editForm.addEventListener("submit" , async (e) => {
+        e.preventDefault();
+
+        const id = editForm.id.value;
+        const name = editForm.name.value;
+        const contact_name = editForm.contact_name.value;
+        const phone_number = editForm.phone_number.value;
+        const email = editForm.email.value;
+        const address = editForm.address.value;
+
+        const response = await fetch(`/suppliers/` , {
+            method: "POST" , 
+            headers : {
+                "Content-Type": "application/json"
+            } , 
+            body : JSON.stringify({id , name , contact_name , phone_number , email , address})
+        });
+
+        const ret = await response.json();
+        console.log(ret);
+
+        alert(ret.status);
+
+        if(ret.status === "success"){
+            window.location.replace("/supplier-management");
+        }
+    });
+
+
+</script>
